@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titulo %}{{ producto.title }} · Tienda POO{% endblock %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('tienda.catalogo') }}">← Volver al catálogo</a>
+<article class="detalle">
+  <div class="detalle-imagen"><img src="{{ producto.image }}" alt="{{ producto.title }}"></div>
+  <div class="detalle-info">
+    <span class="etiqueta">{{ producto.category }}</span>
+    <h1>{{ producto.title }}</h1>
+    <p class="precio">${{ '%.2f'|format(producto.price) }}</p>
+    <p>{{ producto.description }}</p>
+    <p class="rating">Valoración: {{ producto.rate }} / 5 ({{ producto.count }} opiniones)</p>
+
+    {# Solo el Administrador recibe estos controles: para otros roles ni se generan en el HTML #}
+    {% if es_admin %}
+    <div class="acciones">
+      <a class="btn" href="{{ url_for('tienda.editar', producto_id=producto.id) }}">Editar</a>
+      <form method="post" action="{{ url_for('tienda.eliminar', producto_id=producto.id) }}"
+            onsubmit="return confirm('¿Eliminar este producto?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-peligro" type="submit">Eliminar</button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+</article>
+{% endblock %}
