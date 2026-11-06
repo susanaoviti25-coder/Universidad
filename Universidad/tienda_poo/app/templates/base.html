@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Tienda POO{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+  <header class="barra">
+    <div class="izquierda">
+      <a class="marca" href="{{ url_for('tienda.inicio') }}">Tienda POO</a>
+      {# Estos enlaces solo se generan para quien tiene permiso (no se ocultan con CSS) #}
+      {% if puede_auditar or puede_comprar %}
+      <nav class="menu" aria-label="Secciones">
+        <a href="{{ url_for('tienda.catalogo') }}">Catálogo</a>
+        {% if puede_auditar %}
+        <a href="{{ url_for('usuarios.lista') }}">Usuarios</a>
+        <a href="{{ url_for('carritos.lista') }}">Carritos</a>
+        {% endif %}
+        {% if puede_comprar %}
+        <a href="{{ url_for('compra.ver') }}">Mi carrito{% if unidades_carrito %} <span class="contador-carrito">{{ unidades_carrito }}</span>{% endif %}</a>
+        {% endif %}
+      </nav>
+      {% endif %}
+    </div>
+    {% if usuario %}
+    <div class="usuario">
+      <span class="insignia">{{ usuario.rol.value }}</span>
+      <span>{{ usuario.username }}</span>
+      <form method="post" action="{{ url_for('auth.logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-secundario" type="submit">Cerrar sesión</button>
+      </form>
+    </div>
+    {% endif %}
+  </header>
+  <main class="contenedor">
+    {% for categoria, mensaje in get_flashed_messages(with_categories=true) %}
+      {% if categoria == 'alerta' %}
+        <script>window.addEventListener("DOMContentLoaded", () => window.alert({{ mensaje|tojson }}));</script>
+      {% else %}
+        <div class="aviso aviso-{{ categoria }}" role="status">{{ mensaje }}</div>
+      {% endif %}
+    {% endfor %}
+    {% block contenido %}{% endblock %}
+  </main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

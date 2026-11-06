@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titulo %}Editar producto · Tienda POO{% endblock %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('tienda.detalle', producto_id=producto.id) }}">← Cancelar</a>
+<section class="tarjeta-form">
+  <h1>Editar producto #{{ producto.id }}</h1>
+  <form method="post" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="title">Título</label>
+    <input id="title" name="title" type="text" value="{{ request.form.get('title', producto.title) }}" required>
+    <label for="price">Precio (USD)</label>
+    <input id="price" name="price" type="number" step="0.01" min="0.01" value="{{ request.form.get('price', producto.price) }}" required>
+    <label for="category">Categoría</label>
+    <select id="category" name="category">
+      {% for c in categorias %}
+      <option value="{{ c }}" {% if c == request.form.get('category', producto.category) %}selected{% endif %}>{{ c }}</option>
+      {% endfor %}
+    </select>
+    <label for="description">Descripción</label>
+    <textarea id="description" name="description" rows="6" required>{{ request.form.get('description', producto.description) }}</textarea>
+    <button class="btn" type="submit">Guardar cambios</button>
+  </form>
+</section>
+{% endblock %}

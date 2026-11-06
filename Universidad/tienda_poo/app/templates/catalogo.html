@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Catálogo · Tienda POO{% endblock %}
+{% block contenido %}
+<section id="catalogo"
+         data-url-productos="{{ url_for('tienda.api_productos') }}"
+         data-url-categorias="{{ url_for('tienda.api_categorias') }}"
+         data-url-detalle="{{ url_for('tienda.detalle', producto_id=0) }}"
+         data-url-login="{{ url_for('auth.login') }}">
+  <h1>Catálogo de productos</h1>
+  <nav id="filtros" class="chips" aria-label="Filtrar por categoría"></nav>
+
+  <div id="estado-carga" class="estado" role="status" aria-live="polite" hidden>
+    <div class="spinner" aria-hidden="true"></div>
+    <p>Cargando productos…</p>
+  </div>
+  <div id="estado-error" class="estado estado-error" role="alert" hidden>
+    <p>No pudimos cargar el catálogo. Revisa tu conexión e inténtalo de nuevo.</p>
+    <button id="btn-reintentar" class="btn" type="button">Reintentar</button>
+  </div>
+  <p id="estado-vacio" class="estado" hidden>No hay productos en esta categoría.</p>
+
+  <div id="grilla" class="grilla"></div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/catalogo.js') }}" defer></script>{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block titulo %}Usuarios · Tienda POO{% endblock %}
+{% block contenido %}
+<section id="usuarios"
+         data-url-api="{{ url_for('usuarios.api_lista') }}"
+         data-url-login="{{ url_for('auth.login') }}">
+  <h1>Usuarios registrados</h1>
+  <p class="solo-lectura">Vista de solo lectura</p>
+
+  <div class="herramientas">
+    <label for="buscar" class="sr-only">Buscar usuario</label>
+    <input id="buscar" type="search" placeholder="Buscar por nombre, correo, teléfono o usuario" autocomplete="off" disabled>
+    <span id="contador" class="contador" aria-live="polite"></span>
+  </div>
+
+  <div id="estado-carga" class="estado" role="status" aria-live="polite" hidden>
+    <div class="spinner" aria-hidden="true"></div>
+    <p>Cargando usuarios…</p>
+  </div>
+  <div id="estado-error" class="estado estado-error" role="alert" hidden>
+    <p>No pudimos cargar los usuarios. Revisa tu conexión e inténtalo de nuevo.</p>
+    <button id="btn-reintentar" class="btn" type="button">Reintentar</button>
+  </div>
+  <p id="estado-vacio" class="estado" hidden>No se encontraron usuarios.</p>
+
+  <div id="tabla-contenedor" class="tabla-contenedor" hidden>
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th scope="col">Nombre completo</th>
+          <th scope="col">Correo electrónico</th>
+          <th scope="col">Teléfono</th>
+          <th scope="col">Usuario</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo"></tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/usuarios.js') }}" defer></script>{% endblock %}

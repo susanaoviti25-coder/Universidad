@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block titulo %}Mi carrito · Tienda POO{% endblock %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('tienda.catalogo') }}">← Seguir comprando</a>
+<h1>Mi carrito</h1>
+
+{% if error %}
+  <div class="estado estado-error" role="alert">
+    <p>No pudimos cargar tu carrito. Revisa tu conexión e inténtalo de nuevo.</p>
+    <a class="btn" href="{{ url_for('compra.ver') }}">Reintentar</a>
+  </div>
+{% elif not lineas %}
+  <div class="estado">
+    <p>Tu carrito está vacío.</p>
+    <a class="btn" href="{{ url_for('tienda.catalogo') }}">Ir al catálogo</a>
+  </div>
+{% else %}
+  <div class="tabla-contenedor">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th scope="col">Producto</th>
+          <th scope="col">Precio</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Subtotal</th>
+          <th scope="col"><span class="sr-only">Acciones</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for l in lineas %}
+        <tr>
+          <td><a href="{{ url_for('tienda.detalle', producto_id=l.producto.id) }}">{{ l.producto.title }}</a></td>
+          <td>${{ '%.2f'|format(l.producto.price) }}</td>
+          <td>
+            <form class="en-linea" method="post" action="{{ url_for('compra.cambiar', producto_id=l.producto.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input class="cant" name="cantidad" type="number" min="1" max="{{ max_unidades }}" value="{{ l.cantidad }}" aria-label="Cantidad de {{ l.producto.title }}">
+              <button class="btn btn-secundario" type="submit">Actualizar</button>
+            </form>
+          </td>
+          <td>${{ '%.2f'|format(l.subtotal) }}</td>
+          <td>
+            <form class="en-linea" method="post" action="{{ url_for('compra.quitar', producto_id=l.producto.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-peligro" type="submit">Quitar</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="resumen-carrito">
+    <form method="post" action="{{ url_for('compra.vaciar') }}" onsubmit="return confirm('¿Vaciar todo el carrito?');">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-secundario" type="submit">Vaciar carrito</button>
+    </form>
+    <p class="total">Total: <strong>${{ '%.2f'|format(total) }}</strong></p>
+  </div>
+{% endif %}
+{% endblock %}

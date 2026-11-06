@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Error {{ codigo }} · Tienda POO{% endblock %}
+{% block contenido %}
+<section class="estado">
+  <h1>{{ codigo }}</h1>
+  <p>{{ mensaje }}</p>
+  <a class="btn" href="{{ url_for('tienda.inicio') }}">Ir al inicio</a>
+</section>
+{% endblock %}

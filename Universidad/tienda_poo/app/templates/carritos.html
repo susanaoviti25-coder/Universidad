@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}Carritos · Tienda POO{% endblock %}
+{% block contenido %}
+<section id="carritos"
+         data-url-api="{{ url_for('carritos.api_lista') }}"
+         data-url-login="{{ url_for('auth.login') }}">
+  <h1>Histórico de carritos</h1>
+  <p class="solo-lectura">Vista de solo lectura · Selecciona un carrito para ver sus artículos</p>
+
+  <div id="estado-carga" class="estado" role="status" aria-live="polite" hidden>
+    <div class="spinner" aria-hidden="true"></div>
+    <p>Cargando carritos…</p>
+  </div>
+  <div id="estado-error" class="estado estado-error" role="alert" hidden>
+    <p>No pudimos cargar los carritos. Revisa tu conexión e inténtalo de nuevo.</p>
+    <button id="btn-reintentar" class="btn" type="button">Reintentar</button>
+  </div>
+  <p id="estado-vacio" class="estado" hidden>No hay carritos registrados.</p>
+  <p id="aviso-catalogo" class="aviso aviso-aviso" hidden>
+    No se pudo consultar el catálogo de productos; se muestran solo los identificadores.
+  </p>
+
+  <div id="lista" class="lista-carritos"></div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/carritos.js') }}" defer></script>{% endblock %}
